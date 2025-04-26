@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ import com.example.aluvery.R
 import com.example.aluvery.model.Product
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
+import java.text.DecimalFormat
 
 class ProductFormActivity : ComponentActivity() {
 
@@ -102,15 +104,27 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
             )
         )
 
         var price by remember {
             mutableStateOf("")
         }
+
+        val formatted = remember {
+            DecimalFormat("#.##")
+        }
+
         TextField(value = price, onValueChange = {
-            price = it
+            try {
+               price = formatted.format(BigDecimal(it))
+            } catch (e : IllegalArgumentException) {
+                if (it.isBlank()){
+                    price = it
+                }
+            }
         }, Modifier.fillMaxWidth(),
             label = {
                 Text(text = "Preço")
@@ -134,7 +148,8 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                 Text(text = "Descrição")
             },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences
             )
         )
 
