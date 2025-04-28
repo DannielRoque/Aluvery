@@ -51,7 +51,7 @@ fun HomeScreen(
         ) {
 
             if (text.isBlank()) {
-                for (section in sectionalList) {
+                for (section in sections) {
                     val title = section.key
                     val products = section.value
                     item {

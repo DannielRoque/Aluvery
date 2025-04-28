@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.aluvery.dao.ProductDao
 import com.example.aluvery.model.Product
 import com.example.aluvery.sampleData.sampleCandies
 import com.example.aluvery.sampleData.sampleDrinks
@@ -23,19 +24,29 @@ import com.example.aluvery.ui.screens.HomeScreen
 import com.example.aluvery.ui.theme.AluveryTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val dao = ProductDao()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             App(onFabClick = {
                 startActivity(Intent(this, ProductFormActivity::class.java))
-            })
+            }){
+                val sections = mapOf(
+                    "Todos produtos" to dao.products(),
+                    "Salgados" to sampleDrinks,
+                    "Bebidas" to sampleCandies
+                )
+                HomeScreen(sections = sections)
+            }
         }
     }
 }
 
 @Composable
-fun App(onFabClick: () -> Unit = {}) {
+fun App(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
     AluveryTheme {
         Surface {
             Scaffold(floatingActionButton = {
@@ -44,19 +55,12 @@ fun App(onFabClick: () -> Unit = {}) {
                 }
             }) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
-                    HomeScreen(sectionalList)
+                    content()
                 }
             }
         }
     }
 }
-
-val sectionalList: Map<String, List<Product>> = mapOf(
-    "Promoções" to sampleCandies,
-    "Salgados" to sampleDrinks,
-    "Bebidas" to sampleCandies
-
-)
 
 
 
