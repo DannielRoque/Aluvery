@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.aluvery.dao.ProductDao
 import com.example.aluvery.model.Product
 import com.example.aluvery.sampleData.sampleCandies
@@ -59,6 +60,18 @@ fun App(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun AppPreviuew() {
+    App {
+        val sections = mapOf(
+            "Secao de Doces" to sampleCandies,
+            "Secao de Bebidas" to sampleDrinks
+        )
+        HomeScreen(sections = sections)
     }
 }
 
