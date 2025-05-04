@@ -62,3 +62,9 @@ val sampleDrinks = listOf(
         image = "https://images.pexels.com/photos/327090/pexels-photo-327090.jpeg"
     )
 )
+
+val sampleSections = mapOf(
+    "Todos produtos" to (sampleCandies + sampleDrinks),
+    "Salgados" to sampleDrinks,
+    "Bebidas" to sampleCandies
+)

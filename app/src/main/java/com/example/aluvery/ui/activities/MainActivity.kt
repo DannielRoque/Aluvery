@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,13 +14,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aluvery.dao.ProductDao
-import com.example.aluvery.model.Product
 import com.example.aluvery.sampleData.sampleCandies
 import com.example.aluvery.sampleData.sampleDrinks
+import com.example.aluvery.sampleData.sampleSections
 import com.example.aluvery.ui.screens.HomeScreen
+import com.example.aluvery.ui.screens.HomeScreenUiState
 import com.example.aluvery.ui.theme.AluveryTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,12 +36,18 @@ class MainActivity : ComponentActivity() {
             App(onFabClick = {
                 startActivity(Intent(this, ProductFormActivity::class.java))
             }){
+                val products = dao.products()
                 val sections = mapOf(
-                    "Todos produtos" to dao.products(),
+                    "Todos produtos" to products,
                     "Salgados" to sampleDrinks,
                     "Bebidas" to sampleCandies
                 )
-                HomeScreen(sections = sections)
+                val state = remember(products) {
+                    HomeScreenUiState(
+                        section = sections,
+                        products= products
+                    ) }
+                HomeScreen(state = state)
             }
         }
     }
@@ -67,11 +74,7 @@ fun App(onFabClick: () -> Unit = {}, content: @Composable () -> Unit = {}) {
 @Composable
 fun AppPreviuew() {
     App {
-        val sections = mapOf(
-            "Secao de Doces" to sampleCandies,
-            "Secao de Bebidas" to sampleDrinks
-        )
-        HomeScreen(sections = sections)
+        HomeScreen(HomeScreenUiState(section = sampleSections))
     }
 }
 

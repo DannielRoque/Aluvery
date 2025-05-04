@@ -2,7 +2,6 @@ package com.example.aluvery.dao
 
 import androidx.compose.runtime.mutableStateListOf
 import com.example.aluvery.model.Product
-import com.example.aluvery.sampleData.sampleCandies
 
 class ProductDao {
 
