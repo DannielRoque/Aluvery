@@ -9,10 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,29 +23,12 @@ import com.example.aluvery.ui.theme.AluveryTheme
 
 class HomeScreenUiState(
     val section: Map<String, List<Product>> = emptyMap(),
-    private val products: List<Product> = emptyList(),
-    searchText: String = "") {
-
-    var text by mutableStateOf(searchText)
-        private set
-
-    val searchedProducts
-        get() = if (text.isNotBlank()) {
-                sampleCandies.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
-            } else emptyList()
-
-
-    private fun containsInNameOrDescription() = { product: Product ->
-        product.name.contains(text, ignoreCase = true) ||
-                product.description?.contains(text, ignoreCase = true) ?: false
-    }
+    val searchedProducts: List<Product> = emptyList(),
+    val searchText: String = "",
+    var onSearchOnChange: (String) -> Unit = {} ) {
 
     fun isShowSections(): Boolean {
-        return text.isBlank()
-    }
-
-    val searchOnChange: (String) -> Unit = { searchText ->
-        text = searchText
+        return searchText.isBlank()
     }
 }
 
@@ -57,14 +37,12 @@ fun HomeScreen(
     state: HomeScreenUiState = HomeScreenUiState()
 ) {
     val sections = state.section
-    val text = state.text
-    val searchedProducts = remember(text) {
-        state.searchedProducts
-    }
+    val text = state.searchText
+    val searchedProducts = state.searchedProducts
 
     Column(Modifier.padding(16.dp)) {
 
-        SearchTextField(searchText = text, onSearchChange = state.searchOnChange)
+        SearchTextField(searchText = text, onSearchChange = state.onSearchOnChange)
 
         LazyColumn(
             modifier = Modifier
@@ -94,7 +72,6 @@ fun HomeScreen(
 private fun HomeScreenPreview() {
     HomeScreen(HomeScreenUiState(section = sampleSections))
 }
-
 
 @Preview
 @Composable

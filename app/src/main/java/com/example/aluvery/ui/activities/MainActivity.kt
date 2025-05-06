@@ -14,10 +14,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.aluvery.dao.ProductDao
+import com.example.aluvery.model.Product
 import com.example.aluvery.sampleData.sampleCandies
 import com.example.aluvery.sampleData.sampleDrinks
 import com.example.aluvery.sampleData.sampleSections
@@ -42,10 +46,28 @@ class MainActivity : ComponentActivity() {
                     "Salgados" to sampleDrinks,
                     "Bebidas" to sampleCandies
                 )
-                val state = remember(products) {
+                var text by remember {
+                    mutableStateOf("")
+                }
+                fun containsInNameOrDescription() = { product: Product ->
+                    product.name.contains(text, ignoreCase = true) ||
+                            product.description?.contains(text, ignoreCase = true) ?: false
+                }
+
+                val searchedProducts = remember(text, products) {
+                    if (text.isNotBlank()) {
+                        sampleCandies.filter(containsInNameOrDescription()) + products.filter(containsInNameOrDescription())
+                    } else emptyList()
+                }
+
+                val state = remember(products, text) {
                     HomeScreenUiState(
                         section = sections,
-                        products= products
+                        searchedProducts = searchedProducts,
+                        searchText = text,
+                        onSearchOnChange = {
+                            text = it
+                        }
                     ) }
                 HomeScreen(state = state)
             }
