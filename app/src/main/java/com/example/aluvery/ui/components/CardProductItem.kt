@@ -1,6 +1,7 @@
 package com.example.aluvery.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -27,11 +28,19 @@ import java.math.BigDecimal
 fun CardProductItem(
     product: Product,
     modifier: Modifier = Modifier,
-    elevation: Dp = 4.dp
+    elevation: Dp = 4.dp,
+    isExpanded: Boolean = false
 ) {
-    Card(modifier
-        .fillMaxWidth()
-        .heightIn(150.dp), elevation = CardDefaults.cardElevation(defaultElevation = elevation)) {
+    var expanded by remember {
+        mutableStateOf(isExpanded)
+    }
+    Card(
+        modifier
+            .fillMaxWidth()
+            .heightIn(150.dp)
+            .clickable { expanded = !expanded },
+        elevation = CardDefaults.cardElevation(defaultElevation = elevation)
+    ) {
         Column {
             AsyncImage(
                 model = product.image,
@@ -55,12 +64,14 @@ fun CardProductItem(
                     text = product.price.converterCurancyBrazilian()
                 )
             }
-            product.description?.let {
-                Text(
-                    text = it,
-                    Modifier
-                        .padding(16.dp)
-                )
+            if (expanded) {
+                product.description?.let {
+                    Text(
+                        text = it,
+                        Modifier
+                            .padding(16.dp)
+                    )
+                }
             }
         }
     }
@@ -73,7 +84,8 @@ private fun CardProductItemPreview() {
         Surface {
             CardProductItem(
                 product = sampleCandies.random(),
-                elevation = 0.dp
+                elevation = 0.dp,
+                isExpanded = true
             )
         }
     }
