@@ -34,22 +34,10 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.aluvery.R
 import com.example.aluvery.model.Product
+import com.example.aluvery.ui.states.ProductFormUiState
 import com.example.aluvery.ui.theme.AluveryTheme
 import java.math.BigDecimal
 import java.text.DecimalFormat
-
-class ProductFormUiState(
-    val url: String = String(),
-    val name: String = String(),
-    val price: String = String(),
-    val description: String = String(),
-    val isShowPreview: Boolean = url.isNotBlank(),
-    val onUrlChange: (String) -> Unit = {},
-    val onNameChange: (String) -> Unit = {},
-    val onDescriptionChange: (String) -> Unit = {},
-    val onPriceChange: (String) -> Unit = {},
-    val onSaveClick: () -> Unit = {}
-)
 
 @Composable
 fun ProductFormScreen(
@@ -113,7 +101,6 @@ fun ProductFormScreen(
         )
     )
 }
-
 
 @Composable
 fun ProductFormScreen(
