@@ -29,40 +29,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.aluvery.R
-import com.example.aluvery.model.Product
 import com.example.aluvery.ui.states.ProductFormUiState
 import com.example.aluvery.ui.theme.AluveryTheme
 import com.example.aluvery.ui.viewmodels.ProductFormScreenViewModel
 
 @Composable
 fun ProductFormScreen(
-    viewModel : ProductFormScreenViewModel,
-    onSaveClick: (Product) -> Unit = {}
+    viewModel: ProductFormScreenViewModel,
+    onSaveClick: () -> Unit = {}
 ) {
 
     val state by viewModel.uiState.collectAsState()
     ProductFormScreen(
-
-        state = state
+        state = state,
+        onSaveClick = {
+            viewModel.save()
+            onSaveClick()
+        }
     )
 }
-//                val convertedPrice = try {
-//                    BigDecimal(price)
-//                } catch (e: NumberFormatException) {
-//                    BigDecimal.ZERO
-//                }
-//                val product = Product(
-//                    name = name,
-//                    image = url,
-//                    price = convertedPrice,
-//                    description = description
-//                )
-//                Log.i("ProductFormActivity", "ProductFormScreen: $product")
-//                onSaveClick(product)
 
 @Composable
 fun ProductFormScreen(
-    state: ProductFormUiState = ProductFormUiState()
+    state: ProductFormUiState = ProductFormUiState(),
+    onSaveClick: () -> Unit = {}
 ) {
     val url = state.url
     val name = state.name
@@ -144,7 +134,7 @@ fun ProductFormScreen(
         )
 
         Button(
-            onClick = state.onSaveClick,
+            onClick = onSaveClick,
             Modifier.fillMaxWidth()
         ) {
             Text(text = "Salvar")
@@ -153,15 +143,16 @@ fun ProductFormScreen(
     }
 }
 
-    @Preview
-    @Composable
-    fun ProducFormScreenPreview(modifier: Modifier = Modifier) {
-        AluveryTheme {
-            Surface {
-                ProductFormScreen(state = ProductFormUiState())
-            }
+@Preview
+@Composable
+fun ProducFormScreenPreview(modifier: Modifier = Modifier) {
+    AluveryTheme {
+        Surface {
+            ProductFormScreen(state = ProductFormUiState())
         }
     }
+}
+
 @Preview
 @Composable
 fun ProductFormScreenFilledPreview() {
